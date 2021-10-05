@@ -61,4 +61,21 @@ public class OrderRepository {
 
         return query.getResultList();
     }
+
+    public List<Order> findAllWithMemberDelivery() {
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class
+                ).getResultList();
+    }
+
+    // 이러한 쿼리는 따로 repository 빼서 생성해서 만드는게 낫다.
+    // orderRepository는 엔티티를 리턴하는 용도로만 쓰는게 낫다.
+    public List<SimpleOrderQueryDto> findOrderDtos() {
+        return em.createQuery("select new jpabook.jpashop.repository.SimpleOrderQueryDto(o.id, m.name, o.orderDate, o.status, d.address)" +
+                    " from Order o" +
+                    " join o.member m" +
+                    " join o.delivery d", SimpleOrderQueryDto.class).getResultList();
+    }
 }
