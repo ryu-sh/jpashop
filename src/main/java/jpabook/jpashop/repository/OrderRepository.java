@@ -78,4 +78,26 @@ public class OrderRepository {
                     " join o.member m" +
                     " join o.delivery d", SimpleOrderQueryDto.class).getResultList();
     }
+
+    // distinct !! 결과값에 같은 레퍼런스를 가진 order엔티티 있으면 제거해줌
+    // db상의 distinct는 완전 같은 로우만 제거하는데 이 경우 db의 distinct는 제대로 되지 않음.
+    public List<Order> findAllWithItems() {
+        return em.createQuery(
+                "select distinct o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d" +
+                        " join fetch o.orderItems oi" +
+                        " join fetch oi.item i", Order.class)
+                .getResultList();
+    }
+
+    public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
 }
