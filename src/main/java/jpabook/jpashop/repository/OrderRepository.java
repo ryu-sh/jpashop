@@ -79,7 +79,7 @@ public class OrderRepository {
                     " join o.delivery d", SimpleOrderQueryDto.class).getResultList();
     }
 
-    // distinct !! 결과값에 같은 레퍼런스를 가진 order엔티티 있으면 제거해줌
+    // distinct !! 결과값에 같은 레퍼런스를 가진 order엔티티 (pk같으면 같다고 판단함) 있으면 제거해줌
     // db상의 distinct는 완전 같은 로우만 제거하는데 이 경우 db의 distinct는 제대로 되지 않음.
     public List<Order> findAllWithItems() {
         return em.createQuery(
